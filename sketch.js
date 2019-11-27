@@ -1,55 +1,35 @@
 var oldSong;
-var myImage;
+var logo;
+var bg;
+var analyzer;
 
 function preload() {
-  //load sound file
   oldSong = loadSound("./assets/TG1_bumper.mp3");
-  //load image file
-  myImage = loadImage("./assets/radio.png");
+  logo = loadImage("./assets/tg1.png");
+  bg = loadImage("./assets/tg1vecchio.jpg");
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  background(0);
 
-  //loop sound forever
-  oldSong.loop()
+  analyzer = new p5.Amplitude();
+  analyzer.setInput(oldSong);
+
+  oldSong.loop();
 }
 
 function draw() {
-  background(246);
 
   imageMode(CENTER);
-  image(myImage, width/2, height/2, myImage.width/3, myImage.height/3);
+  image(bg, width/2, height/2, bg.width*2.5, bg.height*2.5);
 
-  var myText = "Just like good ol' times!";
-  textFont("Pacifico");
-  textSize(60);
-  drawingContext.textAlign = "center";
-  fill(232, 203, 168);
-  text(myText, width/2, height/7);
+  var volume = 0;
+  volume = analyzer.getLevel();
+  volume = map(volume, 0, 1, 0, height);
 
-  //set volume between a range of values and change it with x position
-  var volume = map(mouseX, 0, width, 0, 1);
-  volume = constrain(volume, 0, 1);
-  oldSong.amp(volume);
-
-  //set speed between a range of values and change with y position
-  var speed = map(mouseY, 0.1, height, 0, 2);
-  speed = constrain(speed, 0.01, 4);
-  oldSong.rate(speed);
-
-  //constrain x and y movements between a range of positions
-  xc = constrain(mouseX, width/2 - 200, width/2 + 200);
-  yc = constrain(mouseY, height/2 - 200, height/2 + 200);
-
-  rectMode(CENTER);
-  noStroke();
-  fill(234, 161, 133);
-  //create the volume slider
-  rect(xc, height/5, 50, 20);
-  //create the speed slider
-  rect(width/3, yc, 20, 50);
-
+  imageMode(CENTER);
+  image(logo, width / 2, height / 2, logo.width/4 + volume, logo.height/4 + volume);
 }
 
 //resize Canvas in real time
